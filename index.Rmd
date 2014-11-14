@@ -55,6 +55,37 @@ sparklify <- function(text, classname = paste0(sample(c(LETTERS, letters), 6), c
 
 ```
 
+```{r dfplot, echo = FALSE, results = 'asis'}
+dfplot <- function(df, size = 20){
+  
+  df2 <- df[, sapply(df, is.numeric)]
+  dfout <- matrix("", nrow = ncol(df2), ncol = ncol(df2))
+  for(i in 1:ncol(df2)){
+    for(j in 1:ncol(df2)){
+      
+      if(i == j){
+        
+        dfout[i, j] <- sparklify("", data = hist(df2[,i], plot = FALSE)$density, renderer = "barChart", 
+                  width = size, height = size, paddingHeight = "true",
+                  position = "right", hoverInteraction = "true")
+        
+      } else {
+        
+        dfout[i, j] <- sparklify("", data = df2[, c(i, j)], renderer = "scatterPlot", 
+                  width = size, height = size, paddingHeight = "true",
+                  position = "right", hoverInteraction = "true")
+        
+      }
+      
+    }
+  }
+  
+  colnames(dfout) <- rownames(dfout) <- colnames(df2)
+  dfout
+  
+}
+```
+
 <p>Note that the `echo = FALSE` parameter was `r sparklify("Uniform", width = 50, hoverInteraction = "false")` added to the code chunk to prevent printing of the R code that generated the plot. Enclose stuff in 'p' tags to prevent line breaks.</p>
 
 <p>Quisque at lacus dolor. Vivamus porttitor sollicitudin nibh non sodales. `r sparklify("Pellentesque", data = exp(rnorm(50)), height = 20, position = "right")` habitant morbi tristique senectus
@@ -72,5 +103,19 @@ facilisis sed sagittis et, id nulla</p>
 <p>The distribution of horsepower is `r sparklify("skewed to the right", data = hist(mtcars$hp, plot = FALSE)$density, position = "right", renderer = "barChart")`, while the distribution of rear axle ratio is `r sparklify("unimodal and symmetric.", data = hist(mtcars$drat, plot = FALSE)$density, position = "right", renderer = "barChart")`. </p>
 
 
-`r sparklify("Test scatter", data = mtcars[,c(1, 4)], renderer = "scatterPlot", width = 25, height = 25, position = "right")`
+`r sparklify("Scatterplot of mpg vs hp", data = mtcars[,c(1, 4)], renderer = "scatterPlot", width = 25, height = 25, position = "right")`
+
+<style>
+td {
+  
+  padding: 5px;
+
+}
+</style>
+
+```{r mt, results='asis'}
+knitr::kable(dfplot(mtcars), format = "html")
+```
+
+
 
