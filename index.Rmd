@@ -1,0 +1,60 @@
+---
+title: "Sparklify"
+author: "Michael Sachs"
+date: "November 14, 2014"
+output: 
+  html_document:
+      self_contained: false
+---
+<head>
+<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="jquery-ui.min.js"></script>
+<script type="text/javascript" src="d3.min.js"></script>
+<script type="text/javascript" src="jquery.sparklificator.js"></script>
+<script type="text/javascript" src="renderers.js"></script>
+</head>
+
+```{r, echo=FALSE}
+sparklify <- function(text, classname = paste0(sample(c(LETTERS, letters), 6), collapse = ""),
+                     position = "top",
+                     width = 100,
+                     height = 50,
+                     data = runif(10),
+                     paddingWidth = "true",
+                     paddingHeight = "false",
+                     stackingOrder = "front",
+                     hoverInteraction = "true",
+                     renderer = "classicSparkline"){
+
+
+  settings <- paste0('{position: "', position,
+         '", width: ', width,
+         ', height: ', height,
+         ', data: [', paste(data, collapse = ", "), ']',
+         ', paddingWidth: ', paddingWidth,
+         ', paddingHeight: ', paddingHeight,
+         ', stackingOrder: "', stackingOrder,
+         '", hoverInteraction: ', hoverInteraction,
+         ', renderer: ', renderer,
+         '}')
+
+  span <- paste0('<span class="', classname, '">', text, '</span>')
+
+  l1 <- paste0('$(".', classname, '").sparklificator();')
+  l2 <- paste0('$(".', classname, '").sparklificator("option", ', settings, ');')
+
+  paste(span, "<script type='text/javascript'>", l1, l2, "</script>", sep = "\n")
+
+}
+
+```
+
+<p>Note that the `echo = FALSE` parameter was `r sparklify("Uniform", width = 50, hoverInteraction = "false")` added to the code chunk to prevent printing of the R code that generated the plot. Enclose stuff in 'p' tags to prevent line breaks.</p>
+
+<p>Quisque at lacus dolor. Vivamus porttitor sollicitudin nibh non sodales. `r sparklify("Pellentesque", data = exp(rnorm(50)), height = 20, position = "right")` habitant morbi tristique senectus
+et netus et malesuada fames ac turpis egestas. Morbi pellentesque magna et cursus
+porttitor. </p>
+
+<p>`r sparklify("Integer", position = "right", data = rpois(50, lambda = 1), height = 20, renderer = "barChart")` orci dui, fermentum in semper eu, imperdiet id 
+metus. Vestibulum sed tincidunt libero. Aliquam nec sodales eros. Sed quam velit,
+facilisis sed sagittis et, id nulla</p>
