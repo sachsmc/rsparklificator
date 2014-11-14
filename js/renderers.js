@@ -54,7 +54,7 @@ function classicSparkline(sparkSpan, width, height, interaction, data) {
 			.attr('width', widthVis + 'px')
 			.attr('height', heightVis + 'px');
 
-	
+
 	// select sparklificatedSPAN, as the entity might be longer than the word-scale visualization
 	var entity = $(sparkSpan).closest($('.sparklificated'));
 	if (interaction) {
@@ -62,7 +62,7 @@ function classicSparkline(sparkSpan, width, height, interaction, data) {
 			  .on('mouseout', fade(0.1));
 	}
 
- 
+
 	var gChart = chart.append('g')
 	    	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
@@ -286,3 +286,95 @@ function pieChart(sparkSpan, width, height, interaction, data) {
 	    };
 	}
 }
+
+
+/**
+* Builds a scatterplot. Data should be an array of length 2 arrays corresponding to [x, y] values.
+* this.element and this.options is alvailable in the renderer if needed
+* @param {string} sparkSpan - the container where the word-scale visualization is placed
+* @param {int} width - width of the word-scale visualization
+* @param {int} height - height of the word-scale visualization
+* @param {boolean} interaction - hover interaction for this word-scale visualization or not
+* @param {array} data - word-scale visualization's array of data, array of length 2 arrays
+**/
+function scatterPlot(sparkSpan, width, height, interaction, data) {
+
+  var circleRadius = 1;
+	var o = this.options;
+
+	var margin = {top: 0, right: 0, bottom: 0, left: 0},
+	    widthVis = width - margin.left - margin.right,
+	    heightVis = height - margin.top - margin.bottom;
+
+	var sparkContainer = d3.select(sparkSpan.get(0));
+	sparkContainer.append('svg');
+
+	var x = d3.scale.linear()
+      .domain([d3.min(data, function(d){ return d[0]; }), d3.max(data, function(d){ return d[0]; })])
+	    .range([0, widthVis-circleRadius]);
+
+	var y = d3.scale.linear()
+    .domain([d3.min(data, function(d){ return d[1]; }), d3.max(data, function(d){ return d[1]; })])
+		.range([heightVis-circleRadius, circleRadius]);
+
+	var xAxis = d3.svg.axis()
+	    .scale(x)
+	    .orient('bottom');
+
+	var yAxis = d3.svg.axis()
+	    .scale(y)
+	    .orient('left');
+
+	var chart = sparkContainer.select('svg')
+			.attr('width', widthVis + 'px')
+			.attr('height', heightVis + 'px');
+
+
+	// select sparklificatedSPAN, as the entity might be longer than the word-scale visualization
+	var entity = $(sparkSpan).closest($('.sparklificated'));
+	if (interaction) {
+		entity.on('mouseover', fade(1))
+			  .on('mouseout', fade(0.1));
+	}
+
+
+	var gChart = chart.append('g')
+	    	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+	gChart.append('g')
+    	.attr('class', 'x axis')
+    	.attr('transform', 'translate(0,' + heightVis + ')');
+
+	gChart.append('g')
+    	.attr('class', 'y axis');
+
+	gChart.selectAll('circle')
+    .data(data).enter().append("circle")
+		.style('fill', 'black')
+		.attr('r', circleRadius)
+		.attr('cx', function(d) { return x(d[0]); })
+		.attr('cy', function(d) { return y(d[1]); });
+
+	if (!interaction) {
+		gChart.style('opacity', 1.0);
+	} else {
+		gChart.style('opacity', 0.1);
+	}
+
+
+	// Returns an event handler for fading in the sparkline graph.
+	function fade(opacity) {
+	    return function(g, i) {
+			chart.select('g')
+				.transition()
+				.style('opacity', opacity);
+
+			var textOpacity = 0.25;
+			if (opacity == 0.1) { textOpacity = 1; }
+
+			d3.select($(sparkSpan).siblings('.entity')[0]).style('opacity',textOpacity)
+	    };
+	}
+}
+
+

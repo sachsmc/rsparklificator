@@ -27,10 +27,16 @@ sparklify <- function(text, classname = paste0(sample(c(LETTERS, letters), 6), c
                      renderer = "classicSparkline"){
 
 
+  if(renderer == "scatterPlot"){
+    
+     datain <- paste0("[", apply(data, MARGIN = 1, FUN = paste, collapse = ", "), "]")
+      
+  } else datain <- data
+  
   settings <- paste0('{position: "', position,
          '", width: ', width,
          ', height: ', height,
-         ', data: [', paste(data, collapse = ", "), ']',
+         ', data: [', paste(datain, collapse = ", "), ']',
          ', paddingWidth: ', paddingWidth,
          ', paddingHeight: ', paddingHeight,
          ', stackingOrder: "', stackingOrder,
@@ -65,4 +71,6 @@ facilisis sed sagittis et, id nulla</p>
 
 <p>The distribution of horsepower is `r sparklify("skewed to the right", data = hist(mtcars$hp, plot = FALSE)$density, position = "right", renderer = "barChart")`, while the distribution of rear axle ratio is `r sparklify("unimodal and symmetric.", data = hist(mtcars$drat, plot = FALSE)$density, position = "right", renderer = "barChart")`. </p>
 
+
+`r sparklify("Test scatter", data = mtcars[,c(1, 4)], renderer = "scatterPlot", width = 25, height = 25, position = "right")`
 
