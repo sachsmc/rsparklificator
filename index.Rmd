@@ -17,8 +17,8 @@ output:
 ```{r, echo=FALSE}
 sparklify <- function(text, classname = paste0(sample(c(LETTERS, letters), 6), collapse = ""),
                      position = "top",
-                     width = 100,
-                     height = 50,
+                     width = 50,
+                     height = 20,
                      data = runif(10),
                      paddingWidth = "true",
                      paddingHeight = "false",
@@ -58,3 +58,11 @@ porttitor. </p>
 <p>`r sparklify("Integer", position = "right", data = rpois(50, lambda = 1), height = 20, renderer = "barChart")` orci dui, fermentum in semper eu, imperdiet id 
 metus. Vestibulum sed tincidunt libero. Aliquam nec sodales eros. Sed quam velit,
 facilisis sed sagittis et, id nulla</p>
+
+
+`r sparklify("Fuel efficiency declines as a function of weight", data = predict(loess(mpg ~ wt, data = mtcars[order(mtcars$wt),])), height = 35, position = "right")`
+
+
+<p>The distribution of horsepower is `r sparklify("skewed to the right", data = hist(mtcars$hp, plot = FALSE)$density, position = "right", renderer = "barChart")`, while the distribution of rear axle ratio is `r sparklify("unimodal and symmetric.", data = hist(mtcars$drat, plot = FALSE)$density, position = "right", renderer = "barChart")`. </p>
+
+
